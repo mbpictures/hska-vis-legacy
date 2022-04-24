@@ -14,7 +14,7 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    @ResponseBody Product newEmployee(@RequestBody Product newProduct) {
+    @ResponseBody Product addProduct(@RequestBody Product newProduct) {
         return productRepository.save(newProduct);
     }
 
@@ -25,7 +25,7 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    @ResponseBody Product replaceEmployee(@RequestBody Product newProduct, @PathVariable int id) {
+    @ResponseBody Product updateProduct(@RequestBody Product newProduct, @PathVariable int id) {
 
         return productRepository.findById(id)
                 .map(product -> {
@@ -42,7 +42,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
-    void deleteEmployee(@PathVariable Integer id) {
+    void deleteProduct(@PathVariable Integer id) {
         productRepository.deleteById(id);
     }
 }
