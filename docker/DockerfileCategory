@@ -1,9 +1,9 @@
 FROM maven:3.5.4-jdk-8-alpine as builder
 
-COPY ./product/pom.xml ./pom.xml
-COPY ./product/src ./src
+COPY ./category/pom.xml ./pom.xml
+COPY ./category/src ./src
 RUN mvn clean package
 
 ENTRYPOINT ["java","-jar","/target/CategoryService-0.0.1-SNAPSHOT.jar"]
 
-EXPOSE 8080
+EXPOSE 8888

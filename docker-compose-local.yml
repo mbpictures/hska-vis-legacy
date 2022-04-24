@@ -5,7 +5,7 @@ services:
       context: ./
       dockerfile: ./docker/DockerfileCategory
     ports:
-      - "8080:8080"
+      - "8888:8888"
     networks:
       local_dev_net:
         aliases:
