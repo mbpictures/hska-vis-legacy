@@ -1,15 +1,15 @@
 version: '3.2'
 services:
-  legacywebshop:
+  product:
     build:
       context: ./
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./docker/DockerfileProduct
     ports:
-      - "8888:8080"
+      - "8080:8080"
     networks:
       local_dev_net:
           aliases:
-              - legacywebshop
+              - product_service
 
   web-shop-db-image:
     build:
