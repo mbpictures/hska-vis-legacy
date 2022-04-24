@@ -3,15 +3,24 @@ package de.hska.iwi.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
 @RestController
 public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
     @GetMapping("/categories")
-    @ResponseBody
-    Iterable<Category> getAll() {
-        return categoryRepository.findAll();
+    @ResponseBody Iterable<Category> getAll(@RequestParam(name = "query") Optional<String> query) {
+        return () -> StreamSupport.stream(categoryRepository.findAll().spliterator(), false)
+                .filter(product -> {
+                    boolean result = true;
+                    if (query.isPresent())
+                        result = product.getName().contains(query.get());
+                    return result;
+                })
+                .iterator();
     }
 
     @PostMapping("/categories")
