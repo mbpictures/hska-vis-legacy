@@ -1,5 +1,16 @@
 version: '3.2'
 services:
+  category:
+    build:
+      context: ./
+      dockerfile: ./docker/DockerfileCategory
+    ports:
+      - "8080:8080"
+    networks:
+      local_dev_net:
+        aliases:
+          - category_service
+
   product:
     build:
       context: ./
