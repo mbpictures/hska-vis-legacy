@@ -1,4 +1,14 @@
-CREATE TABLE category (
+CREATE USER 'productuser' IDENTIFIED BY 'dj2342kjdlkfjl2j234';
+CREATE USER 'categoryuser' IDENTIFIED BY 'akj34k3jdjfk3435jd3';
+
+CREATE DATABASE product;
+
+CREATE DATABASE category;
+
+GRANT ALL PRIVILEGES ON 'product'.* TO 'productuser';
+GRANT ALL PRIVILEGES ON 'category'.* TO 'categoryuser';
+
+CREATE TABLE category.category (
 	id INT NOT NULL AUTO_INCREMENT,
 	name VARCHAR(255) NOT NULL,
 	PRIMARY KEY (id)
@@ -11,7 +21,7 @@ CREATE TABLE role (
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
-CREATE TABLE product (
+CREATE TABLE product.product (
 	id INT NOT NULL AUTO_INCREMENT,
 	details VARCHAR(255),
 	name VARCHAR(255),
