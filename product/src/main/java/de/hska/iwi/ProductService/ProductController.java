@@ -1,9 +1,12 @@
 package de.hska.iwi.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -11,6 +14,20 @@ import java.util.stream.StreamSupport;
 public class ProductController {
     @Autowired
     private ProductRepository productRepository;
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    private Product.Category getCategory(int id) {
+        Map<String, String> uriVariables = new HashMap<>();
+        uriVariables.put("id", Integer.toString(id));
+        ResponseEntity<Product.Category> responseEntity = restTemplate.getForEntity(
+            "http://category-service:8888/categories/{id}",
+            Product.Category.class,
+            uriVariables
+        );
+
+        return responseEntity.getBody();
+    }
 
     @GetMapping("/products")
     @ResponseBody Iterable<Product> getAll(@RequestParam(name = "query") Optional<String> query,
@@ -27,17 +44,21 @@ public class ProductController {
                         result &= product.getPrice() <= maxPrice.get();
                     return result;
                 })
+                .peek(product -> product.setCategory(getCategory(product.getCategoryId())))
                 .iterator();
     }
 
     @PostMapping("/products")
-    @ResponseBody Product addProduct(@RequestBody Product newProduct) {
-        return productRepository.save(newProduct);
+    @ResponseBody int addProduct(@RequestBody Product newProduct) {
+        return productRepository.save(newProduct).getId();
     }
 
     @GetMapping("/products/{id}")
     @ResponseBody Product getProduct(@PathVariable Integer id) {
-        return productRepository.findById(id)
+        return productRepository.findById(id).map(product -> {
+                    product.setCategory(getCategory(product.getCategoryId()));
+                    return product;
+                })
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 

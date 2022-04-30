@@ -1,6 +1,8 @@
 package de.hska.iwi.ProductService;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -24,7 +26,11 @@ public class Product implements java.io.Serializable {
 	private double price;
 
 	@Column(name = "category_id")
+	@JsonIgnore
 	private int categoryId;
+
+	@Transient
+	private Category category;
 
 	private String details;
 
@@ -84,4 +90,32 @@ public class Product implements java.io.Serializable {
 		this.details = details;
 	}
 
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public static class Category implements java.io.Serializable {
+		private String name;
+		private int id;
+
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+	}
 }
