@@ -3,6 +3,7 @@ package de.hska.iwi.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -18,15 +19,19 @@ public class ProductController {
     private final RestTemplate restTemplate = new RestTemplate();
 
     private Product.Category getCategory(int id) {
+        if (id <= 0) return null;
         Map<String, String> uriVariables = new HashMap<>();
         uriVariables.put("id", Integer.toString(id));
-        ResponseEntity<Product.Category> responseEntity = restTemplate.getForEntity(
-            "http://category-service:8888/categories/{id}",
-            Product.Category.class,
-            uriVariables
-        );
-
-        return responseEntity.getBody();
+        try {
+            ResponseEntity<Product.Category> responseEntity = restTemplate.getForEntity(
+                    "http://category-service:8888/categories/{id}",
+                    Product.Category.class,
+                    uriVariables
+            );
+            return responseEntity.getBody();
+        } catch (HttpClientErrorException e) {
+            return null;
+        }
     }
 
     @GetMapping("/products")
