@@ -2,6 +2,8 @@ package de.hska.iwi.ProductService;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
@@ -26,7 +28,7 @@ public class Product implements java.io.Serializable {
 	private double price;
 
 	@Column(name = "category_id")
-	@JsonIgnore
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private int categoryId;
 
 	@Transient
