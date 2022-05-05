@@ -24,8 +24,8 @@ public class CategoryController {
     }
 
     @PostMapping("/categories")
-    @ResponseBody Category addCategory(@RequestBody Category newCategory) {
-        return categoryRepository.save(newCategory);
+    @ResponseBody int addCategory(@RequestBody Category newCategory) {
+        return categoryRepository.save(newCategory).getId();
     }
 
     @GetMapping("/categories/{id}")
