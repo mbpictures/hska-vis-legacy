@@ -10,6 +10,8 @@ servers:
     description: Category Service
 paths:
   /categories:
+    servers:
+      - url: 'http://localhost:8888'
     get:
       responses:
         200:
@@ -30,6 +32,8 @@ paths:
           description: Category successfully created
 
   /categories/{id}:
+    servers:
+      - url: 'http://localhost:8888'
     get:
       parameters:
         - name: id
@@ -69,6 +73,8 @@ paths:
           description: Deleted
 
   /products:
+    servers:
+      - url: 'http://localhost:8080'
     get:
       responses:
         200:
@@ -89,6 +95,8 @@ paths:
           description: Category successfully created
 
   /products/{id}:
+    servers:
+      - url: 'http://localhost:8080'
     get:
       parameters:
         - name: id
