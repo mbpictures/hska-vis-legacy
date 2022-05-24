@@ -1,8 +1,14 @@
 package de.hska.iwi.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -11,8 +17,27 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    private boolean hasProducts(int category) {
+        if (category <= 0) return false;
+        Map<String, String> uriVariables = new HashMap<>();
+        uriVariables.put("categoryId", Integer.toString(category));
+        try {
+            ResponseEntity<Object[]> responseEntity = restTemplate.getForEntity(
+                    "http://product-service:8080/products?categoryId={categoryId}",
+                    Object[].class,
+                    uriVariables
+            );
+            return Objects.requireNonNull(responseEntity.getBody()).length > 0;
+        } catch (HttpClientErrorException e) {
+            return false;
+        }
+    }
+
     @GetMapping("/categories")
-    @ResponseBody Iterable<Category> getAll(@RequestParam(name = "query") Optional<String> query) {
+    @ResponseBody
+    Iterable<Category> getAll(@RequestParam(name = "query") Optional<String> query) {
         return () -> StreamSupport.stream(categoryRepository.findAll().spliterator(), false)
                 .filter(product -> {
                     boolean result = true;
@@ -50,6 +75,7 @@ public class CategoryController {
 
     @DeleteMapping("/categories/{id}")
     void deleteCategory(@PathVariable Integer id) {
+        if (hasProducts(id)) throw new CategoryNotEmptyException(id);
         categoryRepository.deleteById(id);
     }
 }
