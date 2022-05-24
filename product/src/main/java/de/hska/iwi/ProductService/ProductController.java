@@ -35,9 +35,11 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    @ResponseBody Iterable<Product> getAll(@RequestParam(name = "query") Optional<String> query,
+    @ResponseBody
+    Iterable<Product> getAll(@RequestParam(name = "query") Optional<String> query,
                              @RequestParam(name = "minPrice") Optional<Double> minPrice,
-                             @RequestParam(name = "maxPrice") Optional<Double> maxPrice) {
+                             @RequestParam(name = "maxPrice") Optional<Double> maxPrice,
+                             @RequestParam(name = "categoryId") Optional<Integer> categoryId) {
         return () -> StreamSupport.stream(productRepository.findAll().spliterator(), false)
                 .filter(product -> {
                     boolean result = true;
@@ -47,6 +49,8 @@ public class ProductController {
                         result &= product.getPrice() >= minPrice.get();
                     if (maxPrice.isPresent())
                         result &= product.getPrice() <= maxPrice.get();
+                    if (categoryId.isPresent())
+                        result &= product.getCategoryId() == categoryId.get();
                     return result;
                 })
                 .peek(product -> product.setCategory(getCategory(product.getCategoryId())))
