@@ -1,0 +1,179 @@
+openapi: 3.0.3
+info:
+  title: WebShopAPI
+  description: WebShopAPI
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+    description: Product Services
+  - url: 'http://localhost:8888'
+    description: Category Service
+paths:
+  /categories:
+    servers:
+      - url: 'http://localhost:8888'
+    get:
+      responses:
+        200:
+          description: Successfully received categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryArray'
+    post:
+      description: Creates a new category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        200:
+          description: Category successfully created
+
+  /categories/{id}:
+    servers:
+      - url: 'http://localhost:8888'
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+      responses:
+        200:
+          description: Requested Category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        404:
+          description: Not found
+    put:
+      parameters:
+        - name: id
+          in: path
+          required: true
+      responses:
+        200:
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        404:
+          description: Not found
+
+    delete:
+      parameters:
+        - name: id
+          in: path
+          required: true
+      responses:
+        200:
+          description: Deleted
+
+  /products:
+    servers:
+      - url: 'http://localhost:8080'
+    get:
+      responses:
+        200:
+          description: Successfully received Products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductArray'
+    post:
+      description: Creates a new product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        200:
+          description: Category successfully created
+
+  /products/{id}:
+    servers:
+      - url: 'http://localhost:8080'
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+      responses:
+        200:
+          description: Requested Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        404:
+          description: Not found
+    put:
+      parameters:
+        - name: id
+          in: path
+          required: true
+      responses:
+        200:
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        404:
+          description: Not found
+
+    delete:
+      parameters:
+        - name: id
+          in: path
+          required: true
+      responses:
+        200:
+          description: Deleted
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int
+        name:
+          type: string
+      required:
+        - id
+        - name
+    CategoryArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Category'
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int
+        name:
+          type: string
+        category:
+          $ref: '#/components/schemas/Category'
+        categoryId:
+          required: false
+        price:
+          type: number
+          format: float
+        details:
+          type: string
+      required:
+        - id
+        - name
+    ProductArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Product'
