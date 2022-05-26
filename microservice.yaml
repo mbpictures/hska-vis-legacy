@@ -1,3 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,6 +54,7 @@ spec:
       creationTimestamp: null
       labels:
         run: category-service
+        app: webshop
     spec:
       containers:
         - image: docker.io/fatorice/webshop-category-service:latest
@@ -70,6 +84,7 @@ spec:
       creationTimestamp: null
       labels:
         run: product-service
+        app: webshop
     spec:
       containers:
         - image: docker.io/fatorice/webshop-product-service:latest
@@ -99,6 +114,7 @@ spec:
       creationTimestamp: null
       labels:
         run: web-shop-db-image
+        app: webshop
     spec:
       containers:
         - image: docker.io/fatorice/webshop-mysql-db-image:latest
@@ -125,6 +141,7 @@ metadata:
   creationTimestamp: null
   labels:
     run: category-service
+    app: webshop
   name: category-service
 spec:
   ports:
@@ -145,6 +162,7 @@ metadata:
   creationTimestamp: null
   labels:
     run: product-service
+    app: webshop
   name: product-service
 spec:
   ports:
@@ -164,7 +182,7 @@ kind: Service
 metadata:
   labels:
     run: web-shop-db-image
-    app: web-shop-db-image
+    app: webshop
   name: web-shop-db-image
 spec:
   ports:
@@ -172,7 +190,7 @@ spec:
       protocol: TCP
       targetPort: 3306
   selector:
-    run: mysql
+    run: web-shop-db-image
 
 ---
 
@@ -193,34 +211,3 @@ spec:
   type: LoadBalancer
 status:
   loadBalancer: {}
-
----
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: mysql-pv-volume
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 2Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/data"
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
