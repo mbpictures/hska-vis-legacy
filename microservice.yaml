@@ -1,0 +1,226 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: apache
+  name: apache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: apache
+  template:
+    metadata:
+      labels:
+        run: apache
+    spec:
+      containers:
+        - image: docker.io/fatorice/webshop-apache:latest
+          imagePullPolicy: Always
+          name: apache
+          ports:
+            - containerPort: 80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: category-service
+  name: category-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: category-service
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: category-service
+    spec:
+      containers:
+        - image: docker.io/fatorice/webshop-category-service:latest
+          name: category-service
+          ports:
+            - containerPort: 8888
+          resources: {}
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: product-service
+  name: product-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: product-service
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: product-service
+    spec:
+      containers:
+        - image: docker.io/fatorice/webshop-product-service:latest
+          name: product-service
+          ports:
+            - containerPort: 8080
+          resources: {}
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  creationTimestamp: null
+  labels:
+    run: web-shop-db-image
+  name: web-shop-db-image
+spec:
+  replicas: 1
+  serviceName: web-shop-db-image
+  selector:
+    matchLabels:
+      run: web-shop-db-image
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: web-shop-db-image
+    spec:
+      containers:
+        - image: docker.io/fatorice/webshop-mysql-db-image:latest
+          name: web-shop-db-image
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: c8de110f37300a53a971749
+          ports:
+            - containerPort: 3306
+          resources: {}
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: category-service
+  name: category-service
+spec:
+  ports:
+    - port: 8888
+      protocol: TCP
+      targetPort: 8888
+  selector:
+    run: category-service
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: product-service
+  name: product-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    run: product-service
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: web-shop-db-image
+    app: web-shop-db-image
+  name: web-shop-db-image
+spec:
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    run: mysql
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: apache
+  name: apache
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    run: apache
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
