@@ -58,6 +58,7 @@ spec:
     spec:
       containers:
         - image: docker.io/fatorice/webshop-category-service:latest
+          imagePullPolicy: Always
           name: category-service
           ports:
           - containerPort: 8080
@@ -86,6 +87,7 @@ spec:
     spec:
       containers:
         - image: docker.io/fatorice/webshop-product-service:latest
+          imagePullPolicy: Always
           name: product
           ports:
           - containerPort: 8080
