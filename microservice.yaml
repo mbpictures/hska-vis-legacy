@@ -60,9 +60,7 @@ spec:
         - image: docker.io/fatorice/webshop-category-service:latest
           name: category-service
           ports:
-            - containerPort: 8888
-          resources: {}
-status: {}
+          - containerPort: 8080
 
 ---
 
@@ -71,28 +69,26 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    run: product-service
-  name: product-service
+    run: product
+  name: product
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: product-service
+      run: product
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        run: product-service
+        run: product
         app: webshop
     spec:
       containers:
         - image: docker.io/fatorice/webshop-product-service:latest
-          name: product-service
+          name: product
           ports:
-            - containerPort: 8080
-          resources: {}
-status: {}
+          - containerPort: 8080
 
 ---
 
@@ -123,7 +119,7 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               value: c8de110f37300a53a971749
           ports:
-            - containerPort: 3306
+          - containerPort: 3306
           resources: {}
           volumeMounts:
             - name: mysql-persistent-storage
@@ -138,42 +134,36 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
   labels:
-    run: category-service
+    run: category
     app: webshop
-  name: category-service
+  name: category
 spec:
   ports:
-    - port: 8888
+    - port: 8082
       protocol: TCP
-      targetPort: 8888
+      targetPort: 8080
   selector:
-    run: category-service
+    run: category
   type: LoadBalancer
-status:
-  loadBalancer: {}
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
   labels:
-    run: product-service
+    run: product
     app: webshop
-  name: product-service
+  name: product
 spec:
   ports:
-    - port: 8080
+    - port: 8081
       protocol: TCP
       targetPort: 8080
   selector:
-    run: product-service
+    run: product
   type: LoadBalancer
-status:
-  loadBalancer: {}
 
 ---
 
@@ -209,5 +199,3 @@ spec:
   selector:
     run: apache
   type: LoadBalancer
-status:
-  loadBalancer: {}

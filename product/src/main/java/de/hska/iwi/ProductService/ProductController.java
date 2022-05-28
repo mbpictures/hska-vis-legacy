@@ -24,7 +24,7 @@ public class ProductController {
         uriVariables.put("id", Integer.toString(id));
         try {
             ResponseEntity<Product.Category> responseEntity = restTemplate.getForEntity(
-                    "http://category-service:8888/categories/{id}",
+                    "http://category:8082/categories/{id}",
                     Product.Category.class,
                     uriVariables
             );
