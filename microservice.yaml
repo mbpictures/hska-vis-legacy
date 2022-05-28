@@ -41,25 +41,25 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    run: category-service
-  name: category-service
+    run: category
+  name: category
 spec:
   replicas: 3
   selector:
     matchLabels:
-      run: category-service
+      run: category
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        run: category-service
+        run: category
         app: webshop
     spec:
       containers:
         - image: docker.io/fatorice/webshop-category-service:latest
           imagePullPolicy: Always
-          name: category-service
+          name: category
           ports:
           - containerPort: 8080
 
