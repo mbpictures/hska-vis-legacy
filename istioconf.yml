@@ -9,7 +9,7 @@ spec:
   servers:
   - port:
       number: 80
-      name: http
+      name: http-80
       protocol: HTTP
     hosts:
     - "*"
@@ -26,8 +26,8 @@ spec:
     istio: ingressgateway # use istio default controller
   servers:
   - port:
-      number: 80
-      name: http
+      number: 8080
+      name: http-8080
       protocol: HTTP
     hosts:
     - "*"
@@ -53,6 +53,8 @@ spec:
     route:
     - destination:
         host: prometheus
+        port:
+          number: 9090
 
 ---
 
@@ -75,6 +77,8 @@ spec:
     route:
     - destination:
         host: grafana
+        port:
+          number: 3000
 
 ---
 
@@ -97,6 +101,8 @@ spec:
     route:
     - destination:
         host: kiali
+        port:
+          number: 9090
 
 ---
 
@@ -113,12 +119,14 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /product
+        prefix: /product/
     rewrite:
       uri: /
     route:
     - destination:
         host: product
+        port:
+          number: 8081
 
 ---
 
@@ -135,11 +143,13 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /category
+        prefix: /category/
     rewrite:
       uri: /
     route:
     - destination:
         host: category
+        port:
+          number: 8082
 
 ---
