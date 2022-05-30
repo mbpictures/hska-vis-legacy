@@ -1,0 +1,51 @@
+### Get all categories
+GET http://localhost/category/categories
+Accept: application/json
+
+### Get category
+
+GET http://localhost/category/categories/{{categoryId}}
+Accept: application/json
+
+### Add new Category
+
+POST http://localhost/category/categories
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Fast Food"
+}
+
+### Delete category
+
+DELETE http://localhost/category/categories/{{categoryId}}
+Accept: application/json
+
+### Get all products
+
+GET http://localhost/product/products
+Accept: application/json
+
+### Get Product
+
+GET http://localhost/product/products/{{productId}}
+Accept: application/json
+
+### Add Product
+
+POST http://localhost/product/products
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Pommes",
+  "price": 2.99,
+  "categoryId": 1,
+  "details": "Vegan!"
+}
+
+### Delete Product
+
+DELETE http://localhost/product/products/{{productId}}
+Accept: application/json
