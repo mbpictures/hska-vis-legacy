@@ -11,6 +11,13 @@ Nachfolgend soll die Vorgehensweise zum deployen der Microservices mit k8s und i
 ## Deploy Kubernetes Cluster
 
 ```bash
+kubectl create secret generic webshop --from-literal=product_user=productuser --from-literal=product_pw=d
+j2342kjdlkfjl2j234 --from-literal=category_user=categoryuser --from-literal=category_pw=akj34k3jdjfk3435jd3
+```
+
+Zunächst muss mit diesem Befehl ein secret mit nutzernamen/passwörtern für die Datenbank.
+
+```bash
 kubectl apply -f microservice.yml
 ```
 
