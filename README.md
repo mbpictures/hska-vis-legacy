@@ -52,6 +52,11 @@ Anfragen müssen nun an die IP-Addresse des Istio IngressGateways gestellt werde
 kubectl get services -n istio-system
 ```
 
+Um kiali, grafana und prometheus nutzen zu können, muss die automatische Sidecar injection aktiviert und anschließend die microservices neu deployed weren:
+```bash
+kubectl label namespace default istio-injection=enabled --overwrite
+```
+
 Um die Istio Dienste wie Grafana oder Prometheus zu nutzen, müssen die Ports der Dienste weitergeleitet werden. Dazu muss zunächst der pod Name extrahiert werden:
 
 ```bash
