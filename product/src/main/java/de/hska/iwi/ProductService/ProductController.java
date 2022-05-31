@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -39,7 +40,9 @@ public class ProductController {
     Iterable<Product> getAll(@RequestParam(name = "query") Optional<String> query,
                              @RequestParam(name = "minPrice") Optional<Double> minPrice,
                              @RequestParam(name = "maxPrice") Optional<Double> maxPrice,
-                             @RequestParam(name = "categoryId") Optional<Integer> categoryId) {
+                             @RequestParam(name = "categoryId") Optional<Integer> categoryId,
+                             HttpServletResponse response) {
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         return () -> StreamSupport.stream(productRepository.findAll().spliterator(), false)
                 .filter(product -> {
                     boolean result = true;
@@ -58,12 +61,14 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    @ResponseBody int addProduct(@RequestBody Product newProduct) {
+    @ResponseBody int addProduct(@RequestBody Product newProduct, HttpServletResponse response) {
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         return productRepository.save(newProduct).getId();
     }
 
     @GetMapping("/products/{id}")
-    @ResponseBody Product getProduct(@PathVariable Integer id) {
+    @ResponseBody Product getProduct(@PathVariable Integer id, HttpServletResponse response) {
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         return productRepository.findById(id).map(product -> {
                     product.setCategory(getCategory(product.getCategoryId()));
                     return product;
@@ -72,7 +77,8 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    @ResponseBody Product updateProduct(@RequestBody Product newProduct, @PathVariable int id) {
+    @ResponseBody Product updateProduct(@RequestBody Product newProduct, @PathVariable int id, HttpServletResponse response) {
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
 
         return productRepository.findById(id)
                 .map(product -> {
@@ -89,7 +95,8 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
-    void deleteProduct(@PathVariable Integer id) {
+    void deleteProduct(@PathVariable Integer id, HttpServletResponse response) {
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         productRepository.deleteById(id);
     }
 }

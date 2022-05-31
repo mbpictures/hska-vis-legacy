@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -37,7 +38,8 @@ public class CategoryController {
 
     @GetMapping("/categories")
     @ResponseBody
-    Iterable<Category> getAll(@RequestParam(name = "query") Optional<String> query) {
+    Iterable<Category> getAll(@RequestParam(name = "query") Optional<String> query, HttpServletResponse response) {
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         return () -> StreamSupport.stream(categoryRepository.findAll().spliterator(), false)
                 .filter(product -> {
                     boolean result = true;
@@ -49,19 +51,22 @@ public class CategoryController {
     }
 
     @PostMapping("/categories")
-    @ResponseBody int addCategory(@RequestBody Category newCategory) {
+    @ResponseBody int addCategory(@RequestBody Category newCategory, HttpServletResponse response) {
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         return categoryRepository.save(newCategory).getId();
     }
 
     @GetMapping("/categories/{id}")
-    @ResponseBody Category getCategory(@PathVariable Integer id) {
+    @ResponseBody Category getCategory(@PathVariable Integer id, HttpServletResponse response) {
+
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
     }
 
     @PutMapping("/categories/{id}")
-    @ResponseBody Category updateCategory(@RequestBody Category newCategory, @PathVariable int id) {
-
+    @ResponseBody Category updateCategory(@RequestBody Category newCategory, @PathVariable int id, HttpServletResponse response) {
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         return categoryRepository.findById(id)
                 .map(category -> {
                     category.setName(newCategory.getName());
@@ -74,7 +79,8 @@ public class CategoryController {
     }
 
     @DeleteMapping("/categories/{id}")
-    void deleteCategory(@PathVariable Integer id) {
+    void deleteCategory(@PathVariable Integer id, HttpServletResponse response) {
+        response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         if (hasProducts(id)) throw new CategoryNotEmptyException(id);
         categoryRepository.deleteById(id);
     }
