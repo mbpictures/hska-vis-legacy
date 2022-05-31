@@ -11,28 +11,28 @@ spec:
 
 ---
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    run: apache
-  name: apache
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      run: apache
-  template:
-    metadata:
-      labels:
-        run: apache
-    spec:
-      containers:
-        - image: docker.io/fatorice/webshop-apache:latest
-          imagePullPolicy: Always
-          name: apache
-          ports:
-            - containerPort: 80
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  labels:
+#    run: apache
+#  name: apache
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      run: apache
+#  template:
+#    metadata:
+#      labels:
+#        run: apache
+#    spec:
+#      containers:
+#        - image: docker.io/fatorice/webshop-apache:latest
+#          imagePullPolicy: Always
+#          name: apache
+#          ports:
+#            - containerPort: 80
 
 ---
 
@@ -48,13 +48,16 @@ spec:
   selector:
     matchLabels:
       run: category
+      app: webshop-category
+      version: 1.0.0
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
         run: category
-        app: webshop
+        app: webshop-category
+        version: 1.0.0
     spec:
       containers:
         - image: docker.io/fatorice/webshop-category-service:latest
@@ -77,13 +80,16 @@ spec:
   selector:
     matchLabels:
       run: product
+      app: webshop-product
+      version: 1.0.0
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
         run: product
-        app: webshop
+        app: webshop-product
+        version: 1.0.0
     spec:
       containers:
         - image: docker.io/fatorice/webshop-product-service:latest
@@ -107,12 +113,15 @@ spec:
   selector:
     matchLabels:
       run: web-shop-db-image
+      app: webshop-db
+      version: 1.0.0
   template:
     metadata:
       creationTimestamp: null
       labels:
         run: web-shop-db-image
-        app: webshop
+        app: webshop-db
+        version: 1.0.0
     spec:
       containers:
         - image: docker.io/fatorice/webshop-mysql-db-image:latest
@@ -138,7 +147,7 @@ kind: Service
 metadata:
   labels:
     run: category
-    app: webshop
+    app: webshop-category
   name: category
 spec:
   ports:
@@ -156,7 +165,7 @@ kind: Service
 metadata:
   labels:
     run: product
-    app: webshop
+    app: webshop-product
   name: product
 spec:
   ports:
@@ -174,7 +183,7 @@ kind: Service
 metadata:
   labels:
     run: web-shop-db-image
-    app: webshop
+    app: webshop-db
   name: web-shop-db-image
 spec:
   ports:
@@ -185,19 +194,19 @@ spec:
     run: web-shop-db-image
 
 ---
-
-apiVersion: v1
-kind: Service
-metadata:
-  creationTimestamp: null
-  labels:
-    run: apache
-  name: apache
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 80
-  selector:
-    run: apache
-  type: LoadBalancer
+#
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  creationTimestamp: null
+#  labels:
+#    run: apache
+#  name: apache
+#spec:
+#  ports:
+#    - port: 80
+#      protocol: TCP
+#      targetPort: 80
+#  selector:
+#    run: apache
+#  type: LoadBalancer
