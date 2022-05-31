@@ -1,6 +1,7 @@
 package de.hska.iwi.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -15,6 +16,8 @@ import java.util.stream.StreamSupport;
 
 @RestController
 public class CategoryController {
+    @Value("${PRODUCT_URL}")
+    private String productServiceUrl;
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -26,7 +29,7 @@ public class CategoryController {
         uriVariables.put("categoryId", Integer.toString(category));
         try {
             ResponseEntity<Object[]> responseEntity = restTemplate.getForEntity(
-                    "http://product:8081/products?categoryId={categoryId}",
+                    productServiceUrl + "/products?categoryId={categoryId}",
                     Object[].class,
                     uriVariables
             );
