@@ -11,6 +11,17 @@ spec:
 
 ---
 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configuration
+data:
+  database_url: "jdbc:mysql://web-shop-db-image:3306"
+  product_url: "http://product:8081"
+  category_url: "http://category:8082"
+
+---
+
 #apiVersion: apps/v1
 #kind: Deployment
 #metadata:
@@ -65,6 +76,29 @@ spec:
           name: category
           ports:
           - containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: database_url
+            - name: PRODUCT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: product_url
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: webshop
+                  key: category_user
+                  optional: false
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: webshop
+                  key: category_pw
+                  optional: false
 
 ---
 
@@ -97,6 +131,29 @@ spec:
           name: product
           ports:
           - containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: database_url
+            - name: CATEGORY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: category_url
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: webshop
+                  key: product_user
+                  optional: false
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: webshop
+                  key: product_pw
+                  optional: false
 
 ---
 
