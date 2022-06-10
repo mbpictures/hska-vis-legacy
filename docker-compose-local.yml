@@ -1,15 +1,34 @@
 version: '3.2'
 services:
+  legacy:
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      local_dev_net:
+        aliases:
+          - legacy
+    depends_on:
+      - category
+      - product
+
   category:
     build:
       context: ./
       dockerfile: ./docker/DockerfileCategory
     ports:
-      - "8888:8888"
+      - "8082:8080"
+    environment:
+      DATABASE_URL: jdbc:mysql://web-shop-db-image:3306
+      PRODUCT_URL: http://product:8081
+      DATABASE_USERNAME: categoryuser
+      DATABASE_PASSWORD: akj34k3jdjfk3435jd3
     networks:
       local_dev_net:
         aliases:
-          - category-service
+          - category
     depends_on:
       - web-shop-db-image
 
@@ -18,11 +37,16 @@ services:
       context: ./
       dockerfile: ./docker/DockerfileProduct
     ports:
-      - "8080:8080"
+      - "8081:8080"
+    environment:
+      DATABASE_URL: jdbc:mysql://web-shop-db-image:3306
+      CATEGORY_URL: http://category:8081
+      DATABASE_USERNAME: productuser
+      DATABASE_PASSWORD: dj2342kjdlkfjl2j234
     networks:
       local_dev_net:
           aliases:
-              - product-service
+              - product
     depends_on:
       - web-shop-db-image
 
