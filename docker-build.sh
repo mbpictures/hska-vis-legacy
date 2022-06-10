@@ -13,3 +13,7 @@ docker push fatorice/webshop-product-service
 docker build --tag=webshop-mysql-db-image -f docker/DockerfileMySQL .
 docker tag webshop-mysql-db-image fatorice/webshop-mysql-db-image:latest
 docker push fatorice/webshop-mysql-db-image
+
+docker build --tag=legacy-webshop -f docker/Dockerfile .
+docker tag legacy-webshop fatorice/legacy-webshop:latest
+docker push fatorice/legacy-webshop
