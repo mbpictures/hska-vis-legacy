@@ -80,12 +80,12 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 configMapKeyRef:
-                  name: configmap
+                  name: configuration
                   key: database_url
             - name: PRODUCT_URL
               valueFrom:
                 configMapKeyRef:
-                  name: configmap
+                  name: configuration
                   key: product_url
             - name: DATABASE_USERNAME
               valueFrom:
@@ -107,13 +107,13 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    run: webshop
-  name: webshop
+    run: legacywebshop
+  name: legacywebshop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: webshop
+      run: legacywebshop
       app: webshop-webshop
       version: 1.0.0
   strategy: {}
@@ -121,26 +121,26 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        run: webshop
-        app: webshop-webshop
+        run: legacywebshop
+        app: webshop
         version: 1.0.0
     spec:
       containers:
         - image: docker.io/fatorice/legacy-webshop:latest
           imagePullPolicy: Always
-          name: webshop
+          name: legacywebshop
           ports:
             - containerPort: 8080
           env:
             - name: PRODUCT_URL
               valueFrom:
                 configMapKeyRef:
-                  name: configmap
+                  name: configuration
                   key: product_url
             - name: CATEGORY_URL
               valueFrom:
                 configMapKeyRef:
-                  name: configmap
+                  name: configuration
                   key: category_url
 
 ---
@@ -178,12 +178,12 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 configMapKeyRef:
-                  name: configmap
+                  name: configuration
                   key: database_url
             - name: CATEGORY_URL
               valueFrom:
                 configMapKeyRef:
-                  name: configmap
+                  name: configuration
                   key: category_url
             - name: DATABASE_USERNAME
               valueFrom:
@@ -282,16 +282,16 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    run: webshop
+    run: legacywebshop
     app: webshop-webshop
-  name: webshop
+  name: legacywebshop
 spec:
   ports:
     - port: 8083
       protocol: TCP
       targetPort: 8080
   selector:
-    run: product
+    run: legacywebshop
   type: LoadBalancer
 
 ---
