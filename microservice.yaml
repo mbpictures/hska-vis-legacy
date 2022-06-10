@@ -107,6 +107,49 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
+    run: webshop
+  name: webshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: webshop
+      app: webshop-webshop
+      version: 1.0.0
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: webshop
+        app: webshop-webshop
+        version: 1.0.0
+    spec:
+      containers:
+        - image: docker.io/fatorice/legacy-webshop:latest
+          imagePullPolicy: Always
+          name: webshop
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PRODUCT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: product_url
+            - name: CATEGORY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: category_url
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
     run: product
   name: product
 spec:
@@ -227,6 +270,24 @@ metadata:
 spec:
   ports:
     - port: 8081
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    run: product
+  type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: webshop
+    app: webshop-webshop
+  name: webshop
+spec:
+  ports:
+    - port: 8083
       protocol: TCP
       targetPort: 8080
   selector:

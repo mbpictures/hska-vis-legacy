@@ -153,3 +153,27 @@ spec:
           number: 8082
 
 ---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: webshop
+  namespace: default
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: webshop
+            port:
+              number: 8083
+
+---
