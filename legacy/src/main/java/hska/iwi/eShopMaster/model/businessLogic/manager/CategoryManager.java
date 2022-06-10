@@ -1,6 +1,5 @@
 package hska.iwi.eShopMaster.model.businessLogic.manager;
 
-import hska.iwi.eShopMaster.model.database.dataobjects.Category;
 
 import java.util.List;
 

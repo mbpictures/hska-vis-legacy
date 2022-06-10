@@ -1,19 +1,19 @@
 package hska.iwi.eShopMaster.controller;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+import hska.iwi.eShopMaster.model.businessLogic.manager.Category;
 import hska.iwi.eShopMaster.model.businessLogic.manager.CategoryManager;
+import hska.iwi.eShopMaster.model.businessLogic.manager.Product;
 import hska.iwi.eShopMaster.model.businessLogic.manager.ProductManager;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.CategoryManagerImpl;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.ProductManagerImpl;
-import hska.iwi.eShopMaster.model.database.dataobjects.Category;
-import hska.iwi.eShopMaster.model.database.dataobjects.Product;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
 
 public class SearchAction extends ActionSupport{
 
@@ -48,11 +48,11 @@ public class SearchAction extends ActionSupport{
 			// Search products and show results:
 			ProductManager productManager = new ProductManagerImpl();
 //			this.products = productManager.getProductsForSearchValues(this.searchDescription, this.searchMinPrice, this.searchMaxPrice);
-			if (!searchMinPrice.isEmpty()){
-				sMinPrice =  Double.parseDouble(this.searchMinPrice);
+			if (!StringUtils.isBlank(searchMinPrice)) {
+				sMinPrice = Double.parseDouble(this.searchMinPrice);
 			}
-			if (!searchMaxPrice.isEmpty()){
-				sMaxPrice =  Double.parseDouble(this.searchMaxPrice);
+			if (!StringUtils.isBlank(searchMaxPrice)) {
+				sMaxPrice = Double.parseDouble(this.searchMaxPrice);
 			}
 			this.products = productManager.getProductsForSearchValues(this.searchDescription, sMinPrice, sMaxPrice);
 			
