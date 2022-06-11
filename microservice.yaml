@@ -114,7 +114,7 @@ spec:
   selector:
     matchLabels:
       run: legacywebshop
-      app: webshop-webshop
+      app: webshop
       version: 1.0.0
   strategy: {}
   template:

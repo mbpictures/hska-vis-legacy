@@ -172,7 +172,7 @@ spec:
         uri: /
       route:
         - destination:
-            host: webshop
+            host: legacywebshop
             port:
               number: 8083
 
