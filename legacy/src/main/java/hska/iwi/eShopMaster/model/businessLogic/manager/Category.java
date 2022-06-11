@@ -8,7 +8,7 @@ public class Category implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
     private int id;
-    private String name;
+    public String name;
 
     public Category() {
     }

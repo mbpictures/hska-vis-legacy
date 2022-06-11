@@ -4,8 +4,8 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import hska.iwi.eShopMaster.model.businessLogic.manager.Category;
 import hska.iwi.eShopMaster.model.businessLogic.manager.CategoryManager;
-import hska.iwi.eShopMaster.model.businessLogic.manager.Product;
 import hska.iwi.eShopMaster.model.businessLogic.manager.ProductManager;
+import hska.iwi.eShopMaster.model.businessLogic.manager.ProductView;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.CategoryManagerImpl;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.ProductManagerImpl;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
@@ -29,9 +29,9 @@ public class SearchAction extends ActionSupport{
 	
 	private Double sMinPrice = null;
 	private Double sMaxPrice = null;
-	
+
 	private User user;
-	private List<Product> products;
+	private List<ProductView> products;
 	private List<Category> categories;
 	
 
@@ -73,14 +73,14 @@ public class SearchAction extends ActionSupport{
 		public void setUser(User user) {
 			this.user = user;
 		}
-		
-		public List<Product> getProducts() {
-			return products;
-		}
 
-		public void setProducts(List<Product> products) {
-			this.products = products;
-		}
+	public List<ProductView> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<ProductView> products) {
+		this.products = products;
+	}
 		
 		public List<Category> getCategories() {
 			return categories;

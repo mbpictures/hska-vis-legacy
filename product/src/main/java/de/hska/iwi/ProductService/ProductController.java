@@ -44,11 +44,14 @@ public class ProductController {
                              @RequestParam(name = "minPrice") Optional<Double> minPrice,
                              @RequestParam(name = "maxPrice") Optional<Double> maxPrice,
                              @RequestParam(name = "categoryId") Optional<Integer> categoryId,
+                             @RequestParam(name = "productName") Optional<String> productName,
                              HttpServletResponse response) {
         response.setHeader("Pod-Name", System.getenv("HOSTNAME"));
         return () -> StreamSupport.stream(productRepository.findAll().spliterator(), false)
                 .filter(product -> {
                     boolean result = true;
+                    if (productName.isPresent())
+                        return product.getName().equals(productName.get());
                     if (query.isPresent())
                         result = product.getName().contains(query.get()) || product.getDetails().contains(query.get());
                     if (minPrice.isPresent())

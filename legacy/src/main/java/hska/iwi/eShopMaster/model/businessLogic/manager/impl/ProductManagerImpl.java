@@ -1,13 +1,16 @@
 package hska.iwi.eShopMaster.model.businessLogic.manager.impl;
 
-import hska.iwi.eShopMaster.model.businessLogic.manager.Product;
 import hska.iwi.eShopMaster.model.businessLogic.manager.ProductManager;
+import hska.iwi.eShopMaster.model.businessLogic.manager.ProductReceive;
+import hska.iwi.eShopMaster.model.businessLogic.manager.ProductSend;
+import hska.iwi.eShopMaster.model.businessLogic.manager.ProductView;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ProductManagerImpl implements ProductManager {
 	private final String BASE_URI = System.getenv("PRODUCT_URL");
@@ -16,19 +19,21 @@ public class ProductManagerImpl implements ProductManager {
 	public ProductManagerImpl() {
 	}
 
-	public List<Product> getProducts() {
-		return Arrays.asList(Objects.requireNonNull(webClient
+	public List<ProductView> getProducts() {
+		List<ProductReceive> productReceives = Arrays.asList(Objects.requireNonNull(webClient
 				.get()
 				.uri("/products")
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
-				.bodyToMono(Product[].class)
+				.bodyToMono(ProductReceive[].class)
 				.block()));
+
+		return productReceives.stream().map(product -> new ProductView(product, product.getCategory())).collect(Collectors.toList());
 	}
 
-	public List<Product> getProductsForSearchValues(String searchDescription,
-													Double searchMinPrice, Double searchMaxPrice) {
-		return Arrays.asList(Objects.requireNonNull(webClient
+	public List<ProductView> getProductsForSearchValues(String searchDescription,
+														Double searchMinPrice, Double searchMaxPrice) {
+		List<ProductReceive> productReceives = Arrays.asList(Objects.requireNonNull(webClient
 				.get()
 				.uri(uriBuilder -> uriBuilder
 						.path("/products")
@@ -38,28 +43,43 @@ public class ProductManagerImpl implements ProductManager {
 						.build())
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
-				.bodyToMono(Product[].class)
+				.bodyToMono(ProductReceive[].class)
 				.block()));
+
+		return productReceives.stream().map(product -> new ProductView(product, product.getCategory())).collect(Collectors.toList());
 	}
 
-	public Product getProductById(int id) {
-		return Objects.requireNonNull(webClient
+	public ProductView getProductById(int id) {
+		ProductReceive productReceive = Objects.requireNonNull(webClient
 				.get()
 				.uri(uriBuilder -> uriBuilder
 						.path("/products/{id}")
 						.build(id))
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
-				.bodyToMono(Product.class)
+				.bodyToMono(ProductReceive.class)
 				.block());
+
+		return new ProductView(productReceive, productReceive.getCategory());
 	}
 
-	public Product getProductByName(String name) {
-		return null;
+	public ProductView getProductByName(String name) {
+		List<ProductReceive> productReceives = Arrays.asList(Objects.requireNonNull(webClient
+				.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/products")
+						.queryParam("productName", name)
+						.build())
+				.accept(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.bodyToMono(ProductReceive[].class)
+				.block()));
+
+		return new ProductView(productReceives.get(0), productReceives.get(0).getCategory());
 	}
-	
+
 	public int addProduct(String name, double price, int categoryId, String details) {
-		Product product = new Product(name, price, categoryId, details);
+		ProductSend product = new ProductSend(name, price, categoryId, details);
 		return Objects.requireNonNull(webClient
 				.post()
 				.uri("/products")
@@ -77,7 +97,10 @@ public class ProductManagerImpl implements ProductManager {
 				.uri(uriBuilder -> uriBuilder
 						.path("/products/{id}")
 						.build(id))
-				.retrieve();
+				.retrieve()
+				.bodyToMono(void.class)
+				.block();
+		;
 	}
 
 	public boolean deleteProductsByCategoryId(int categoryId) {

@@ -66,6 +66,8 @@ public class CategoryManagerImpl implements CategoryManager {
 				.uri(uriBuilder -> uriBuilder
 						.path("/categories/{id}")
 						.build(id))
-				.retrieve();
+				.retrieve()
+				.bodyToMono(void.class)
+				.block();
 	}
 }

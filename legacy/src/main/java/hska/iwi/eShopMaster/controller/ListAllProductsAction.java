@@ -2,8 +2,8 @@ package hska.iwi.eShopMaster.controller;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-import hska.iwi.eShopMaster.model.businessLogic.manager.Product;
 import hska.iwi.eShopMaster.model.businessLogic.manager.ProductManager;
+import hska.iwi.eShopMaster.model.businessLogic.manager.ProductView;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.ProductManagerImpl;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
@@ -16,9 +16,9 @@ public class ListAllProductsAction extends ActionSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = -94109228677381902L;
-	
+
 	User user;
-	private List<Product> products;
+	private List<ProductView> products;
 	
 	public String execute() throws Exception{
 		String result = "input";
@@ -43,12 +43,12 @@ public class ListAllProductsAction extends ActionSupport {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	public List<Product> getProducts() {
+
+	public List<ProductView> getProducts() {
 		return products;
 	}
 
-	public void setProducts(List<Product> products) {
+	public void setProducts(List<ProductView> products) {
 		this.products = products;
 	}
 
