@@ -21,7 +21,7 @@ public class CategoryManagerImpl implements CategoryManager {
 	public List<Category> getCategories() {
 		return Arrays.asList(Objects.requireNonNull(webClient
 				.get()
-				.uri("/category")
+				.uri("/categories")
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
 				.bodyToMono(Category[].class)
@@ -32,7 +32,7 @@ public class CategoryManagerImpl implements CategoryManager {
 		return Objects.requireNonNull(webClient
 				.get()
 				.uri(uriBuilder -> uriBuilder
-						.path("/category/{id}")
+						.path("/categories/{id}")
 						.build(id))
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
@@ -48,7 +48,7 @@ public class CategoryManagerImpl implements CategoryManager {
 		Category product = new Category(name);
 		Objects.requireNonNull(webClient
 				.post()
-				.uri("/category")
+				.uri("/categories")
 				.contentType(MediaType.APPLICATION_JSON)
 				.bodyValue(product)
 				.retrieve()
@@ -64,7 +64,7 @@ public class CategoryManagerImpl implements CategoryManager {
 		webClient
 				.delete()
 				.uri(uriBuilder -> uriBuilder
-						.path("/category/{id}")
+						.path("/categories/{id}")
 						.build(id))
 				.retrieve();
 	}
